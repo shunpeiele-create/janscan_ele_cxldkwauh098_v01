@@ -37,18 +37,12 @@
         h1 {
             color: #667eea;
             font-size: 24px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
-        .settings-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
+        .subtitle {
+            color: #666;
             font-size: 14px;
-            cursor: pointer;
-            margin-top: 10px;
         }
 
         .card {
@@ -145,118 +139,97 @@
         .result h3 {
             color: #2e7d32;
             margin-bottom: 5px;
+            font-size: 18px;
         }
 
         .result.error h3 {
             color: #c62828;
         }
 
-        .register-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .result p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
         }
 
-        .register-row {
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .stats {
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 15px;
             padding: 10px;
             background: #f5f5f5;
             border-radius: 8px;
         }
 
-        .register-row input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .register-row .remove-btn {
-            background: #f44336;
-            padding: 8px 12px;
-            font-size: 14px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
-            color: #667eea;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .button-group button {
-            flex: 1;
-        }
-
-        .cancel-btn {
-            background: #999;
-        }
-
-        .status {
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
+        .stat-item {
             text-align: center;
         }
 
-        .status.success {
-            background: #e8f5e9;
-            color: #2e7d32;
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
         }
 
-        .status.error {
-            background: #ffebee;
-            color: #c62828;
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .list-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .list-item {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .list-item:hover {
+            background: #f5f5f5;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-jan {
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .list-model {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
         }
 
         .loading {
@@ -278,19 +251,29 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .info-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>📱 JANコードスキャナー</h1>
-            <button class="settings-btn" onclick="openSettings()">⚙️ GitHub設定</button>
+            <p class="subtitle">読み取り専用版 - Token不要</p>
         </div>
 
         <div class="card">
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('scan')">スキャン</button>
-                <button class="tab" onclick="switchTab('register')">登録</button>
+                <button class="tab" onclick="switchTab('list')">一覧</button>
             </div>
 
             <!-- スキャンタブ -->
@@ -308,131 +291,101 @@
                 <div id="result"></div>
             </div>
 
-            <!-- 登録タブ -->
-            <div id="register-tab" class="tab-content">
-                <h3 style="margin-bottom: 15px;">新規登録（最大10件）</h3>
-                <div id="register-form" class="register-form">
-                    <!-- 登録フォームがここに動的生成されます -->
+            <!-- 一覧タブ -->
+            <div id="list-tab" class="tab-content">
+                <div class="search-box">
+                    <input type="text" id="filter-input" placeholder="🔍 型番またはJANで検索..." oninput="filterList()">
                 </div>
-                <button onclick="addRegisterRow()">➕ 行を追加</button>
-                <button onclick="submitRegistration()" style="background:#4caf50; margin-top:10px;">💾 一括登録</button>
-                <div id="register-status"></div>
-            </div>
-        </div>
-    </div>
 
-    <!-- GitHub設定モーダル -->
-    <div id="settings-modal" class="modal">
-        <div class="modal-content">
-            <h2>GitHub設定</h2>
-            <div class="form-group">
-                <label>GitHubユーザー名:</label>
-                <input type="text" id="github-user" placeholder="username">
-            </div>
-            <div class="form-group">
-                <label>リポジトリ名:</label>
-                <input type="text" id="github-repo" placeholder="repository-name">
-            </div>
-            <div class="form-group">
-                <label>CSVファイルパス:</label>
-                <input type="text" id="csv-path" placeholder="jan-codes.csv">
-            </div>
-            <div class="form-group">
-                <label>Personal Access Token:</label>
-                <input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxx">
-                <small style="color:#666; display:block; margin-top:5px;">
-                    GitHub > Settings > Developer settings > Personal access tokens で作成<br>
-                    権限: repo (Full control of private repositories)
-                </small>
-            </div>
-            <div class="button-group">
-                <button class="cancel-btn" onclick="closeSettings()">キャンセル</button>
-                <button onclick="saveSettings()">保存</button>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-count">0</div>
+                        <div class="stat-label">総登録数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="filtered-count">0</div>
+                        <div class="stat-label">表示中</div>
+                    </div>
+                </div>
+
+                <div class="list-container" id="list-container">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>データを読み込み中...</p>
+                    </div>
+                </div>
+
+                <div class="info-badge">
+                    💡 CSVの更新はGitHubから直接編集してください
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // ========================================
+        // 🔧 GitHub設定（ここを編集してください）
+        // ========================================
+        const GITHUB_CONFIG = {
+            // GitHubユーザー名（例: 'yamada-taro'）
+            user: 'shunpeiele-create',
+            
+            // リポジトリ名（例: 'jan-code-database'）
+            repo: 'janscan_ele_cxldkwauh098_v01',
+            
+            // CSVファイルのパス（リポジトリ内のパス）
+            csvPath: 'jan-codes.csv'
+            
+            // 📝 注意: Tokenは不要です！
+            // このHTMLファイルはそのままGitHubに公開できます
+            // リポジトリは必ずPublic（公開）にしてください
+        };
+        // ========================================
+        
         let html5QrcodeScanner = null;
         let janDatabase = {};
-        let githubConfig = {
-            user: '',
-            repo: '',
-            csvPath: 'jan-codes.csv',
-            token: ''
-        };
+        let allData = [];
 
         // 初期化
         window.onload = function() {
-            loadSettings();
             loadCSVData();
-            initializeRegisterForm();
         };
 
-        // 設定の読み込み
-        function loadSettings() {
-            const saved = localStorage.getItem('githubConfig');
-            if (saved) {
-                githubConfig = JSON.parse(saved);
-                document.getElementById('github-user').value = githubConfig.user;
-                document.getElementById('github-repo').value = githubConfig.repo;
-                document.getElementById('csv-path').value = githubConfig.csvPath;
-                document.getElementById('github-token').value = githubConfig.token;
-            }
-        }
-
-        // 設定の保存
-        function saveSettings() {
-            githubConfig.user = document.getElementById('github-user').value;
-            githubConfig.repo = document.getElementById('github-repo').value;
-            githubConfig.csvPath = document.getElementById('csv-path').value;
-            githubConfig.token = document.getElementById('github-token').value;
-            
-            localStorage.setItem('githubConfig', JSON.stringify(githubConfig));
-            closeSettings();
-            loadCSVData();
-            showStatus('設定を保存しました', 'success');
-        }
-
-        function openSettings() {
-            document.getElementById('settings-modal').classList.add('active');
-        }
-
-        function closeSettings() {
-            document.getElementById('settings-modal').classList.remove('active');
-        }
-
-        // CSVデータの読み込み
+        // CSVデータの読み込み（Token不要版）
         async function loadCSVData() {
-            if (!githubConfig.user || !githubConfig.repo || !githubConfig.token) {
-                showResult('GitHub設定を行ってください', 'error');
+            if (!GITHUB_CONFIG.user || !GITHUB_CONFIG.repo) {
+                console.warn('GitHub設定が未入力です。HTMLファイル内のGITHUB_CONFIGを編集してください。');
+                showListError('GitHub設定が未入力です');
                 return;
             }
 
             try {
-                const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${githubConfig.csvPath}`;
-                const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `token ${githubConfig.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
+                // GitHub Raw URL（Token不要でアクセス可能）
+                const url = `https://raw.githubusercontent.com/${GITHUB_CONFIG.user}/${GITHUB_CONFIG.repo}/main/${GITHUB_CONFIG.csvPath}`;
+                
+                const response = await fetch(url);
 
                 if (response.ok) {
-                    const data = await response.json();
-                    const csvContent = atob(data.content);
+                    const csvContent = await response.text();
                     parseCSV(csvContent);
+                    renderList();
+                } else if (response.status === 404) {
+                    console.error('CSVファイルが見つかりません');
+                    showListError('CSVファイルが見つかりません。リポジトリとファイルパスを確認してください。');
                 } else {
                     console.error('CSVファイルの読み込みに失敗しました');
+                    showListError('データの読み込みに失敗しました');
                 }
             } catch (error) {
                 console.error('データ読み込みエラー:', error);
+                showListError('ネットワークエラーが発生しました');
             }
         }
 
         // CSV解析
         function parseCSV(csvContent) {
             janDatabase = {};
+            allData = [];
             const lines = csvContent.split('\n');
             
             for (let i = 1; i < lines.length; i++) {
@@ -441,10 +394,11 @@
                     const [jan, model] = line.split(',').map(s => s.trim());
                     if (jan && model) {
                         janDatabase[jan] = model;
+                        allData.push({ jan, model });
                     }
                 }
             }
-            console.log('データベース読み込み完了:', Object.keys(janDatabase).length, '件');
+            console.log('データベース読み込み完了:', allData.length, '件');
         }
 
         // タブ切り替え
@@ -454,6 +408,10 @@
             
             event.target.classList.add('active');
             document.getElementById(tabName + '-tab').classList.add('active');
+
+            if (tabName === 'list') {
+                renderList();
+            }
         }
 
         // スキャナー起動
@@ -524,142 +482,70 @@
             resultDiv.className = 'result ' + type;
         }
 
-        // 登録フォーム初期化
-        function initializeRegisterForm() {
-            for (let i = 0; i < 3; i++) {
-                addRegisterRow();
-            }
-        }
+        // 一覧表示
+        function renderList() {
+            const container = document.getElementById('list-container');
+            const filterValue = document.getElementById('filter-input').value.toLowerCase();
 
-        // 登録行追加
-        function addRegisterRow() {
-            const form = document.getElementById('register-form');
-            const rowCount = form.children.length;
-            
-            if (rowCount >= 10) {
-                alert('最大10件まで登録できます');
+            if (allData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📦</div>
+                        <p>データがありません</p>
+                        <p style="font-size:12px; margin-top:10px;">GitHub設定を確認してください</p>
+                    </div>
+                `;
+                document.getElementById('total-count').textContent = '0';
+                document.getElementById('filtered-count').textContent = '0';
                 return;
             }
 
-            const row = document.createElement('div');
-            row.className = 'register-row';
-            row.innerHTML = `
-                <input type="text" placeholder="JANコード" class="jan-input" pattern="[0-9]*" inputmode="numeric">
-                <input type="text" placeholder="型番" class="model-input">
-                <button class="remove-btn" onclick="removeRegisterRow(this)">✕</button>
-            `;
-            form.appendChild(row);
-        }
-
-        // 登録行削除
-        function removeRegisterRow(btn) {
-            btn.parentElement.remove();
-        }
-
-        // 一括登録
-        async function submitRegistration() {
-            const rows = document.querySelectorAll('.register-row');
-            const newData = [];
-
-            rows.forEach(row => {
-                const jan = row.querySelector('.jan-input').value.trim();
-                const model = row.querySelector('.model-input').value.trim();
-                if (jan && model) {
-                    newData.push({ jan, model });
-                }
+            // フィルター適用
+            const filteredData = allData.filter(item => {
+                if (!filterValue) return true;
+                return item.jan.includes(filterValue) || 
+                       item.model.toLowerCase().includes(filterValue);
             });
 
-            if (newData.length === 0) {
-                showRegisterStatus('登録するデータを入力してください', 'error');
+            // 統計更新
+            document.getElementById('total-count').textContent = allData.length;
+            document.getElementById('filtered-count').textContent = filteredData.length;
+
+            // リスト表示
+            if (filteredData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <p>検索結果がありません</p>
+                    </div>
+                `;
                 return;
             }
 
-            if (!githubConfig.user || !githubConfig.repo || !githubConfig.token) {
-                showRegisterStatus('GitHub設定を行ってください', 'error');
-                return;
-            }
-
-            showRegisterStatus('登録中...', 'loading');
-
-            try {
-                // 現在のCSVを取得
-                const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${githubConfig.csvPath}`;
-                const getResponse = await fetch(url, {
-                    headers: {
-                        'Authorization': `token ${githubConfig.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-
-                let csvContent = 'jan_code,model_number\n';
-                let sha = '';
-
-                if (getResponse.ok) {
-                    const fileData = await getResponse.json();
-                    csvContent = atob(fileData.content);
-                    sha = fileData.sha;
-                }
-
-                // 新しいデータを追加
-                newData.forEach(item => {
-                    csvContent += `${item.jan},${item.model}\n`;
-                });
-
-                // GitHubに更新
-                const updateResponse = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${githubConfig.token}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: `Add ${newData.length} new JAN codes`,
-                        content: btoa(unescape(encodeURIComponent(csvContent))),
-                        sha: sha
-                    })
-                });
-
-                if (updateResponse.ok) {
-                    showRegisterStatus(`✅ ${newData.length}件の登録が完了しました！`, 'success');
-                    
-                    // フォームをクリア
-                    document.querySelectorAll('.register-row input').forEach(input => input.value = '');
-                    
-                    // データベースを再読み込み
-                    await loadCSVData();
-                } else {
-                    const error = await updateResponse.json();
-                    showRegisterStatus('登録に失敗しました: ' + error.message, 'error');
-                }
-            } catch (error) {
-                showRegisterStatus('エラーが発生しました: ' + error.message, 'error');
-            }
+            container.innerHTML = filteredData.map(item => `
+                <div class="list-item">
+                    <div>
+                        <div class="list-model">${item.model}</div>
+                        <div class="list-jan">${item.jan}</div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // 登録ステータス表示
-        function showRegisterStatus(message, type) {
-            const statusDiv = document.getElementById('register-status');
-            if (type === 'loading') {
-                statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>' + message + '</p></div>';
-            } else {
-                statusDiv.innerHTML = '<div class="status ' + type + '">' + message + '</div>';
-            }
+        // リストフィルター
+        function filterList() {
+            renderList();
         }
 
-        // 汎用ステータス表示
-        function showStatus(message, type) {
-            const statusDiv = document.createElement('div');
-            statusDiv.className = 'status ' + type;
-            statusDiv.textContent = message;
-            statusDiv.style.position = 'fixed';
-            statusDiv.style.top = '20px';
-            statusDiv.style.left = '50%';
-            statusDiv.style.transform = 'translateX(-50%)';
-            statusDiv.style.zIndex = '2000';
-            document.body.appendChild(statusDiv);
-            
-            setTimeout(() => statusDiv.remove(), 3000);
+        // エラー表示
+        function showListError(message) {
+            const container = document.getElementById('list-container');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <p>${message}</p>
+                </div>
+            `;
         }
     </script>
 </body>
